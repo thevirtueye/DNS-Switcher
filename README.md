@@ -1,4 +1,5 @@
 DNS-Switcher
+
 What it does:
 DNS-Switcher is a PowerShell script that automates switching between different DNS configurations on Windows systems. Specifically, it allows you to toggle between using Cloudflare's DNS servers (1.1.1.1) with DNS over HTTPS and the automatic DNS configuration provided by your ISP or VPN. The script modifies DNS settings for all active network interfaces, both Wi-Fi and Ethernet, with a simple command.
 How to use it:
