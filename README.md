@@ -24,7 +24,7 @@ Most ISPs assign their own DNS servers via DHCP. These servers may be slow, unen
 
 - Applies Cloudflare DNS (1.1.1.1 / 1.0.0.1) to all active network adapters automatically
 - Supports both IPv4 and IPv6 DNS configuration (2606:4700:4700::1111 / 2606:4700:4700::1001)
-- Configures DNS over HTTPS (DoH) endpoint
+- References the Cloudflare DoH endpoint — actual DoH enforcement requires OS-level configuration (see Limitations)
 - Restores automatic DNS settings (DHCP) with a single option
 - Detects and configures all active interfaces (Wi-Fi and Ethernet)
 - Handles IPv6 availability gracefully — skips if not supported on the adapter
