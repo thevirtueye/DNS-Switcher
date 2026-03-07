@@ -24,7 +24,7 @@ Most ISPs assign their own DNS servers via DHCP. These servers may be slow, unen
 
 - Applies Cloudflare DNS (1.1.1.1 / 1.0.0.1) to all active network adapters automatically
 - Supports both IPv4 and IPv6 DNS configuration (2606:4700:4700::1111 / 2606:4700:4700::1001)
-- Configures DNS over HTTPS (DoH) endpoint (https://cloudflare-dns.com/dns-query)
+- Configures DNS over HTTPS (DoH) endpoint
 - Restores automatic DNS settings (DHCP) with a single option
 - Detects and configures all active interfaces (Wi-Fi and Ethernet)
 - Handles IPv6 availability gracefully — skips if not supported on the adapter
@@ -36,8 +36,8 @@ Most ISPs assign their own DNS servers via DHCP. These servers may be slow, unen
 ## Requirements
 
 - Windows 10 or Windows 11
-- PowerShell 5.1 or later (pre-installed on all modern Windows systems)
-- Administrator privileges (the script verifies this at startup)
+- PowerShell 5.1 or later 
+- Administrator privileges 
 
 No additional software or modules are required.
 
@@ -48,29 +48,29 @@ No additional software or modules are required.
 1. Download or clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/DNS-Switcher.git
+git clone https://github.com/thevirtueye/DNS-Switcher.git
 ```
 
-2. Optionally, create a desktop shortcut for quick access:
+2. If you have never run PowerShell scripts on your system, you need to allow script execution first. Open PowerShell as administrator and run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+This only needs to be done once. It allows locally created scripts to run while still blocking unsigned scripts downloaded from the internet.
+
+3. Optionally, create a desktop shortcut for quick access:
    - Right-click on `DNS-Switcher.ps1` and select **Create shortcut**
-   - Right-click the shortcut, open **Properties**, and set the **Target** field to:
-
-```
-powershell.exe -ExecutionPolicy Bypass -File "C:\path\to\DNS-Switcher.ps1"
-```
-
-   - Click **Advanced** and enable **Run as administrator**
-
-Replace the path with the actual location of the script on your system.
+   - Right-click the shortcut, open **Properties**, click **Advanced**, and enable **Run as administrator**
 
 ---
 
 ## Usage
 
-Run the script as administrator (either via the shortcut or from an elevated PowerShell terminal):
+Right-click the script (or the shortcut) and select **Run as administrator**, or launch it from an elevated PowerShell terminal:
 
 ```powershell
-powershell.exe -ExecutionPolicy Bypass -File ".\DNS-Switcher.ps1"
+.\DNS-Switcher.ps1
 ```
 
 The interactive menu presents the following options:
