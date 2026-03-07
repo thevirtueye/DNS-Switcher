@@ -130,4 +130,4 @@ Free to use, modify, and distribute. Please credit the author where applicable.
 
 ## Author
 
-Created by **Alberto Cirillo**.
+Created by **Alberto Cirillo** — 2025
