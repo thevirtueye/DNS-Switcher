@@ -1,76 +1,133 @@
-# 🔄 DNS-Switcher for Windows
+# DNS-Switcher for Windows
 
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue.svg)
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-DNS-Switcher is a simple yet powerful PowerShell script that lets you switch DNS configurations on the fly on your Windows system. With a single command, toggle between your ISP's automatic DNS servers and Cloudflare's secure DNS (1.1.1.1) with DNS over HTTPS (DoH).
+A lightweight PowerShell utility to toggle DNS configurations on Windows systems. Switch between your ISP's automatic DNS servers and Cloudflare's secure DNS (1.1.1.1 / 1.0.0.1) with a single command, including IPv6 and DNS over HTTPS (DoH) support.
 
 ---
 
-## ✨ Key Features
+## Why Use This
 
-* **🔒 Enhanced Privacy:** Leverages Cloudflare's DNS, which doesn't log your queries and provides a more private Browse experience.
-* **🛡️ Advanced Security:** With DNS over HTTPS (DoH), your DNS requests are encrypted, protecting you from eavesdropping and man-in-the-middle attacks.
-* **🚀 Faster Browse:** Cloudflare's servers are among the fastest in the world. Reduce page load times and improve your online experience.
-* **🌐 Bypass Censorship:** Helps circumvent some types of DNS-based website blocking imposed at the ISP level.
-* **🔗 VPN Compatibility:** Need to use your VPN's DNS? No problem. The "restore" option lets you switch back to default settings with one click.
-* **✅ Integrated DNSSEC:** Built-in protection against DNS spoofing attacks, ensuring that DNS responses are authentic and untampered with.
+Most ISPs assign their own DNS servers via DHCP. These servers may be slow, unencrypted, and subject to logging or content filtering. Switching to a privacy-focused resolver like Cloudflare addresses several concerns:
 
+- **Privacy** — Cloudflare commits to not logging querying IP addresses and purges all logs within 24 hours.
+- **Security** — DNS over HTTPS encrypts DNS queries, protecting them from eavesdropping and man-in-the-middle attacks. DNSSEC validation ensures response integrity.
+- **Performance** — Cloudflare operates one of the fastest public DNS resolvers globally, reducing lookup latency.
+- **Censorship circumvention** — Bypasses some forms of DNS-based blocking applied at the ISP level.
+- **VPN compatibility** — The restore option reverts to DHCP-assigned DNS, which is often required for proper VPN operation.
 
-## 🚀 Getting Started
+---
 
-Follow these simple steps to get up and running.
+## Features
 
-### 1. Save the Script
+- Applies Cloudflare DNS (1.1.1.1 / 1.0.0.1) to all active network adapters automatically
+- Supports both IPv4 and IPv6 DNS configuration (2606:4700:4700::1111 / 2606:4700:4700::1001)
+- Configures DNS over HTTPS (DoH) endpoint (https://cloudflare-dns.com/dns-query)
+- Restores automatic DNS settings (DHCP) with a single option
+- Detects and configures all active interfaces (Wi-Fi and Ethernet)
+- Handles IPv6 availability gracefully — skips if not supported on the adapter
+- Interactive menu with color-coded output for clear feedback
+- Built-in administrator privilege check
 
-Save the code as a `.ps1` file, for example: `DNS-Switcher.ps1`.
+---
 
-### 2. Create a Shortcut
+## Requirements
 
-For easy access, create a shortcut to the file:
-* Right-click on the `DNS-Switcher.ps1` file → `Create shortcut`.
+- Windows 10 or Windows 11
+- PowerShell 5.1 or later (pre-installed on all modern Windows systems)
+- Administrator privileges (the script verifies this at startup)
 
-### 3. Configure to Run as Administrator
+No additional software or modules are required.
 
-We need to ensure the script runs with the necessary permissions.
+---
 
-* Right-click on the newly created **shortcut** → `Properties`.
-* In the `Target` field, modify the path to look like this:
+## Installation
 
-```powershell
-powershell.exe -ExecutionPolicy Bypass -File "C:\path\to\your\DNS-Switcher.ps1"
+1. Download or clone the repository:
+
+```bash
+git clone https://github.com/yourusername/DNS-Switcher.git
 ```
 
-Note: Be sure to replace "C:\path\to\your\DNS-Switcher.ps1" with the actual file path on your system.
+2. Optionally, create a desktop shortcut for quick access:
+   - Right-click on `DNS-Switcher.ps1` and select **Create shortcut**
+   - Right-click the shortcut, open **Properties**, and set the **Target** field to:
 
-* Click Advanced... and check the "Run as administrator" box.
-* Click OK to save.
-
-
-## ⚙️ How to Use
-Double-click the shortcut you just configured. An interactive menu will appear:
-
-
-```powershell
-DNS-Switcher 
-
-Select an option:
-
-[1] Set Cloudflare DNS (1.1.1.1) with DoH
-[2] Restore Automatic DNS (DHCP)
-
-[Q] Quit
+```
+powershell.exe -ExecutionPolicy Bypass -File "C:\path\to\DNS-Switcher.ps1"
 ```
 
-* Option 1: Configures all active network adapters (Wi-Fi and Ethernet) to use Cloudflare's DNS servers (1.1.1.1, 1.0.0.1) and enables DNS over HTTPS.
-* Option 2: Removes any custom DNS settings and restores the automatic configuration provided by your router/ISP (via DHCP).
+   - Click **Advanced** and enable **Run as administrator**
 
+Replace the path with the actual location of the script on your system.
 
-## 💻 Compatibility
-The script is tested and works on all modern Windows operating systems:
+---
 
-* Windows 10
-* Windows 11
-  
-It runs on both physical and virtualized machines without needing any additional software beyond PowerShell, which comes pre-installed on Windows.
+## Usage
+
+Run the script as administrator (either via the shortcut or from an elevated PowerShell terminal):
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File ".\DNS-Switcher.ps1"
+```
+
+The interactive menu presents the following options:
+
+```
+===== DNS CONFIGURATION FOR WINDOWS =====
+1: Set Cloudflare DNS (manual)
+2: Set Automatic DNS (for VPN)
+Q: Quit
+==========================================
+```
+
+**Option 1** configures all active network adapters to use Cloudflare DNS servers with DoH. Useful as a default configuration for everyday browsing.
+
+**Option 2** removes all custom DNS settings and restores DHCP-assigned configuration. Use this before connecting to a VPN or when returning to a network that requires its own DNS servers.
+
+---
+
+## How It Works
+
+The script operates on all currently active network adapters detected via `Get-NetAdapter`. For each adapter:
+
+1. **Cloudflare mode** — Sets primary and secondary DNS via `Set-DnsClientServerAddress` (IPv4) and `netsh` (IPv6). References the DoH endpoint for encrypted resolution.
+2. **Automatic mode** — Calls `ResetServerAddresses` to clear manual DNS entries and removes IPv6 DNS servers, reverting to whatever the DHCP server provides.
+
+The script checks for IPv6 support on each adapter before attempting configuration, avoiding errors on interfaces where IPv6 is disabled.
+
+---
+
+## Limitations
+
+- DNS over HTTPS configuration is referenced but not fully enforced via PowerShell. Windows 11 supports native DoH through Settings or registry modifications. On Windows 10, a third-party DoH client may be needed for full encrypted resolution.
+- The script configures DNS at the adapter level. System-wide DNS policies set via Group Policy or MDM may override these settings.
+- On networks with captive portals (hotels, airports), custom DNS may prevent the portal from loading. Use Option 2 to restore automatic DNS in these cases.
+
+---
+
+## Compatibility
+
+Tested and verified on:
+
+| OS | Status |
+|----|--------|
+| Windows 11 | Fully supported |
+| Windows 10 | Fully supported |
+
+Works on both physical and virtualized machines (VMware, VirtualBox, Hyper-V).
+
+---
+
+## License
+
+This project is released under the **MIT License**.
+Free to use, modify, and distribute. Please credit the author where applicable.
+
+---
+
+## Author
+
+Created by **Alberto Cirillo**.
