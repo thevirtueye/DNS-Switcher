@@ -1,4 +1,4 @@
-# DNS-Switcher for Windows
+# DNS Switcher for Windows
 
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-blue.svg)
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-blue.svg)
